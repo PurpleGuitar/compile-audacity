@@ -1,4 +1,4 @@
-.PHONY: build run shell
+.PHONY: build run testx shell
 
 IMAGE_LABEL := build-audacity
 
@@ -39,10 +39,3 @@ shell:
 		--device /dev/snd \
 		$(IMAGE_LABEL) \
 		/bin/bash
-
-copy-release:
-	docker run --rm \
-		--volume="/tmp/Audacity:/output" \
-		$(IMAGE_LABEL) \
-		cp -rp /root/audacity/build/bin/Release /output
-
