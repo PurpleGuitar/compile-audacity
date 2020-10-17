@@ -35,12 +35,8 @@ shell:
 		/bin/bash
 
 copy-release:
-	mkdir -p /tmp/Audacity
-	rm -rf /tmp/Audacity/*
-	docker run --net=host \
-		--rm --interactive --tty \
+	docker run --rm \
 		--volume="/tmp/Audacity:/output" \
-		--env DISPLAY="${DISPLAY}" \
 		$(IMAGE_LABEL) \
-		"cp -rp /Audacity/* /output"
+		cp -rp /root/audacity/build/bin/Release /output
 

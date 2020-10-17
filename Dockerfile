@@ -45,7 +45,4 @@ RUN cd /root \
  && make -j8 \
  && make install
 
-RUN mkdir /Audacity \
- && cp -rp /root/audacity/build/bin/Release/* /Audacity
-
 CMD audacity
