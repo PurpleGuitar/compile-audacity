@@ -10,8 +10,11 @@ run:
 	test $(DISPLAY) # If blank, then $$DISPLAY is not set
 	docker run --net=host \
 		--rm \
+		--volume="/tmp/audacity-working:/root/working" \
+		--volume="/tmp/.audacity-data:/root/.audacity-data" \
 		--volume="$${XAUTHORITY}:/root/.Xauthority:rw" \
 		--env DISPLAY="${DISPLAY}" \
+		--device /dev/snd \
 		$(IMAGE_LABEL)
 
 testx:
@@ -29,8 +32,11 @@ shell:
 	test $(DISPLAY) # If blank, then $$DISPLAY is not set
 	docker run --net=host \
 		--rm --interactive --tty \
+		--volume="/tmp/audacity-working:/root/working" \
+		--volume="/tmp/.audacity-data:/root/.audacity-data" \
 		--volume="$${XAUTHORITY}:/root/.Xauthority:rw" \
 		--env DISPLAY="${DISPLAY}" \
+		--device /dev/snd \
 		$(IMAGE_LABEL) \
 		/bin/bash
 
