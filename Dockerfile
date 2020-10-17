@@ -1,6 +1,5 @@
 FROM debian:buster-slim
 
-VOLUME /root
 WORKDIR /root
 
 # Install dependencies
@@ -43,6 +42,10 @@ RUN cd /root \
  && mkdir build \
  && cd build \
  && cmake -DCMAKE_BUILD_TYPE=Release -Daudacity_use_ffmpeg=loaded .. \
- && make -j8
+ && make -j8 \
+ && make install
 
-CMD xlogo
+RUN mkdir /Audacity \
+ && cp -rp /root/audacity/build/bin/Release/* /Audacity
+
+CMD audacity

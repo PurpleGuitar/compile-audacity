@@ -1,7 +1,6 @@
-.PHONY: build run shell clean
+.PHONY: build run shell
 
-IMAGE_LABEL := local-x11-dev
-VOLUME_LABEL := $(IMAGE_LABEL)-volume
+IMAGE_LABEL := build-audacity
 
 build:
 	docker build --tag $(IMAGE_LABEL) .
@@ -12,8 +11,18 @@ run:
 	docker run --net=host \
 		--rm \
 		--volume="$${XAUTHORITY}:/root/.Xauthority:rw" \
-		--volume $(VOLUME_LABEL):/root \
-		--env DISPLAY="${DISPLAY}" $(IMAGE_LABEL)
+		--env DISPLAY="${DISPLAY}" \
+		$(IMAGE_LABEL)
+
+testx:
+	# If on WSL: $$DISPLAY should be set to your X display manager, e.g. '192.168.3.3:0.0'
+	test $(DISPLAY) # If blank, then $$DISPLAY is not set
+	docker run --net=host \
+		--rm \
+		--volume="$${XAUTHORITY}:/root/.Xauthority:rw" \
+		--env DISPLAY="${DISPLAY}" \
+		$(IMAGE_LABEL) \
+		xlogo
 
 shell:
 	# If on WSL: $$DISPLAY should be set to your X display manager, e.g. '192.168.3.3:0.0'
@@ -21,9 +30,17 @@ shell:
 	docker run --net=host \
 		--rm --interactive --tty \
 		--volume="$${XAUTHORITY}:/root/.Xauthority:rw" \
-		--volume $(VOLUME_LABEL):/root \
-		--env DISPLAY="${DISPLAY}" $(IMAGE_LABEL) \
+		--env DISPLAY="${DISPLAY}" \
+		$(IMAGE_LABEL) \
 		/bin/bash
 
-clean:
-	docker volume rm $(VOLUME_LABEL)
+copy-release:
+	mkdir -p /tmp/Audacity
+	rm -rf /tmp/Audacity/*
+	docker run --net=host \
+		--rm --interactive --tty \
+		--volume="/tmp/Audacity:/output" \
+		--env DISPLAY="${DISPLAY}" \
+		$(IMAGE_LABEL) \
+		"cp -rp /Audacity/* /output"
+
